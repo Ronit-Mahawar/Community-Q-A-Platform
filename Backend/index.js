@@ -1,20 +1,33 @@
 const express = require("express");
+const cors = require("cors");
 const { mongooDbConnect } = require("./connection");
 const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/user");
-mongooDbConnect("mongodb://localhost:27017/qna");
+mongooDbConnect("mongodb://127.0.0.1:27017/qna");
+const User = require("./models/user");
 const cookieParser = require("cookie-parser");
 const checkForAuth = require("./middlewear/auth");
 const app = express();
 const PORT = 9000;
-
+app.use(
+  cors({
+    origin: "http://localhost:5173", // frontend origin
+    credentials: true, // allow cookies
+  })
+);
 app.listen(PORT, console.log(`Server Started at PORT:${PORT}`));
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(cookieParser());
 app.use(checkForAuth("token"));
 
 app.get("/", (req, res) => {
   return res.json("hello");
 });
+// User.create({
+//   fullName: "ronit",
+//   email: "ronitmahawar18@gmail.com",
+//   password: "12345678",
+// });
 
-app.use("/users", userRouter);
+app.use("/api/users", userRouter);
