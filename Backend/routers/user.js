@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/user");
 const { createHmac } = require("crypto");
 const { makeUserToken } = require("../services/authjwt");
+const checkForAuth = require("../middlewear/auth");
 
 router.post("/signup", async (req, res) => {
   console.log(req.body);
@@ -15,8 +16,10 @@ router.post("/signup", async (req, res) => {
   console.log("create");
   return res.json("hello");
 });
+
 router.post("/signin", async (req, res) => {
-  console.log(req.body);
+  console.log("sign in backend");
+  console.log("req.body", req.body);
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) res.json("invalid email");
@@ -27,16 +30,27 @@ router.post("/signin", async (req, res) => {
 
   if (givenHashedPassword !== user.password) res.json("invalid password");
   const token = makeUserToken(user);
+  const payload = {
+    _id: user._id,
+    email: user.email,
+    role: user.role,
+  };
+
   return res
     .cookie("token", token, {
       httpOnly: true,
       sameSite: "lax",
       secure: false, // true in production with https
     })
-    .json({ message: "Logged in" });
+    .json({ message: "Logged in", user: payload });
 });
 router.get("/logout", (req, res) => {
   res.clearCookie("token").redirect("/");
+});
+router.get("/me", checkForAuth("token"), (req, res) => {
+  console.log("me");
+  console.log(req.user);
+  return res.json({ user: req.user });
 });
 
 module.exports = router;

@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import authApi from "../api/authApi";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 const SigninForm = () => {
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
   const [userFormData, setUserFormData] = useState({
     email: "",
     password: "",
@@ -19,7 +23,12 @@ const SigninForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await authApi.SignIn(userFormData);
-    console.log(res);
+
+    console.log("Signin Form", res);
+    if (res.data !== "invalid password" && res.data !== "invalid email") {
+      setUser(res.data.user);
+      navigate("/");
+    }
   };
 
   return (

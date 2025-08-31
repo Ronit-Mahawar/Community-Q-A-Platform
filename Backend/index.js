@@ -3,10 +3,11 @@ const cors = require("cors");
 const { mongooDbConnect } = require("./connection");
 const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/user");
+const postRouter = require("./routers/post");
 mongooDbConnect("mongodb://127.0.0.1:27017/qna");
 const User = require("./models/user");
 const cookieParser = require("cookie-parser");
-const checkForAuth = require("./middlewear/auth");
+
 const app = express();
 const PORT = 9000;
 app.use(
@@ -19,7 +20,6 @@ app.listen(PORT, console.log(`Server Started at PORT:${PORT}`));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(checkForAuth("token"));
 
 app.get("/", (req, res) => {
   return res.json("hello");
@@ -31,3 +31,4 @@ app.get("/", (req, res) => {
 // });
 
 app.use("/api/users", userRouter);
+app.use("/api/post", postRouter);
