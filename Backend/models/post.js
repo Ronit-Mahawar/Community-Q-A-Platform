@@ -20,23 +20,24 @@ const questionSchema = new mongoose.Schema(
         lowercase: true,
       },
     ],
-    postdBy: {
+    postBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: false,
+      required: true,
     },
-    upvotes: [
+    votes: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        voteId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        voteType: {
+          type: String,
+          enum: ["upvote", "downvote"],
+        },
       },
     ],
-    downvotes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -52,7 +53,7 @@ const questionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    CommentCount: {
+    commentCount: {
       type: Number,
       default: 0,
     },
@@ -60,6 +61,6 @@ const questionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Post = mongoose.model("post", questionSchema);
+const Post = mongoose.model("Post", questionSchema);
 
 module.exports = Post;

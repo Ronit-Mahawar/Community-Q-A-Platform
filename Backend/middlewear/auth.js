@@ -6,12 +6,17 @@ function checkForAuth(cookieName) {
     console.log("➡️ Middleware triggered for:", req.path);
 
     const token = req.cookies[cookieName];
-    if (!token) return next();
+    console.log(token);
+    if (!token) {
+      console.log("invalid ");
+      return res.json("invalid token");
+    }
 
     try {
       const user = verifyUsertoken(token);
       console.log(user);
       req.user = user;
+      console.log("req.user", req.user);
     } catch (error) {
       console.error(error);
     }
