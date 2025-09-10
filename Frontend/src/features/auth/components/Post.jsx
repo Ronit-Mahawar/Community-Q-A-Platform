@@ -1,3 +1,5 @@
+import Votes from "./Votes";
+
 const Post = ({ post }) => {
   return (
     <div className="border p-4 rounded-lg shadow-sm mb-4 w-1/2 justify-center">
@@ -7,15 +9,7 @@ const Post = ({ post }) => {
         <p className="text-sm text-gray-500">By {post.postBy.fullName}</p>
       )}
       <div className="flex flex-row ">
-        <div>
-          <button>
-            <i className="fi fi-rr-up"></i>
-          </button>
-          <span>{post.upvoteCount - post.downvoteCount}</span>
-          <button>
-            <i className="fi fi-rr-down"></i>
-          </button>
-        </div>
+        <Votes post={post} />
         <div>
           <button>
             <i class="fi fi-rr-comment-dots"></i>
