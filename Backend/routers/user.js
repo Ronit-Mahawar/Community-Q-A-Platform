@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../models/user");
 const { createHmac } = require("crypto");
 const { makeUserToken } = require("../services/authjwt");
-const checkForAuth = require("../middlewear/auth");
+const { checkForAuth } = require("../middlewear/auth");
 
 router.post("/signup", async (req, res) => {
   console.log(req.body);
@@ -40,12 +40,18 @@ router.post("/signin", async (req, res) => {
     .cookie("token", token, {
       httpOnly: true,
       sameSite: "lax",
-      secure: false, // true in production with https
+      secure: process.env.NODE_ENV === "production", // false in dev
     })
     .json({ message: "Logged in", user: payload });
 });
-router.get("/logout", (req, res) => {
-  res.clearCookie("token").redirect("/");
+router.post("/logout", (req, res) => {
+  console.log("logout");
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  return res.json({ message: "logout" });
 });
 router.get("/me", checkForAuth("token"), (req, res) => {
   console.log("me");

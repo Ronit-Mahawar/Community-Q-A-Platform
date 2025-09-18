@@ -9,7 +9,8 @@ function checkForAuth(cookieName) {
     console.log(token);
     if (!token) {
       console.log("invalid ");
-      return res.json("invalid token");
+      req.user = null;
+      return res.status(404).json("invalid token");
     }
 
     try {
@@ -24,4 +25,28 @@ function checkForAuth(cookieName) {
     return next();
   };
 }
-module.exports = checkForAuth;
+function OptionalAuth(cookieName) {
+  return (req, res, next) => {
+    console.log("➡️ Middleware triggered for:", req.path);
+
+    const token = req.cookies[cookieName];
+    console.log(token);
+    if (!token) {
+      console.log("invalid ");
+      req.user = null;
+      return next();
+    }
+
+    try {
+      const user = verifyUsertoken(token);
+      console.log(user);
+      req.user = user;
+      console.log("req.user", req.user);
+    } catch (error) {
+      console.error(error);
+    }
+
+    return next();
+  };
+}
+module.exports = { checkForAuth, OptionalAuth };

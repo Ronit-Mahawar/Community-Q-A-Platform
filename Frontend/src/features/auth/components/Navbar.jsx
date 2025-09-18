@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import Logout from "./Logout";
 
 const Navbar = () => {
   const { user } = useAuth();
@@ -21,6 +22,7 @@ const Navbar = () => {
         </div>
         {user ? (
           <div className="flex space-x-6">
+            <Logout />
             <NavLink
               to="/addPost"
               className={({ isActive }) =>

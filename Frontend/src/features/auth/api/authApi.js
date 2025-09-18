@@ -58,10 +58,11 @@ const GetMe = async () => {
   }
 };
 const ShowPost = async (page) => {
-  const limit = 10;
+  const limit = 5;
   try {
     const res = await axios.get(
-      `http://localhost:9000/api/post?page=${page}&limit=${limit}`
+      `http://localhost:9000/api/post?page=${page}&limit=${limit}`,
+      { withCredentials: true }
     );
     console.log(res);
     {
@@ -97,5 +98,31 @@ const ShowPost = async (page) => {
     return err;
   }
 };
+const Logout = async () => {
+  try {
+    await axios.post(
+      "http://localhost:9000/api/users/logout",
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
+const Vote = async (postId, type) => {
+  try {
+    const res = await axios.post(
+      `http://localhost:9000/api/post/${postId}/vote`,
+      { type },
+      { withCredentials: true }
+    );
+    return res.data;
+  } catch (err) {
+    console.error(err.message);
+    return "invalid token";
+  }
+};
 
-export default { SignIn, SignUp, GetMe, AddPost, ShowPost };
+export default { SignIn, SignUp, GetMe, AddPost, ShowPost, Logout, Vote };

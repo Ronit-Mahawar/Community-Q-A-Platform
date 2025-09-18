@@ -13,6 +13,7 @@ const Post = ({ post }) => {
         <div>
           <button>
             <i class="fi fi-rr-comment-dots"></i>
+
             <span>{post.commentCount}</span>
           </button>
         </div>

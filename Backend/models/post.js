@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const questionSchema = new mongoose.Schema(
+const PostSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -25,26 +25,6 @@ const questionSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    votes: [
-      {
-        voteId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
-        voteType: {
-          type: String,
-          enum: ["upvote", "downvote"],
-        },
-      },
-    ],
-
-    comments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Comment",
-      },
-    ],
-
     upvoteCount: {
       type: Number,
       default: 0,
@@ -61,6 +41,6 @@ const questionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Post = mongoose.model("Post", questionSchema);
+const Post = mongoose.model("Post", PostSchema);
 
 module.exports = Post;

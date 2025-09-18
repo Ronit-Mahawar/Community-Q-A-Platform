@@ -1,18 +1,19 @@
 import authApi from "../api/authApi";
 import Navbar from "../components/Navbar";
 import Post from "../components/Post";
+import Pagination from "../components/Pagination";
 import PostForm from "../components/PostForm";
 import { useAuth } from "../context/authContext";
 import { useState, useEffect } from "react";
 
 const Dashboard = () => {
-  const [page, setPage] = useState(1);
+  const [pageIndex, setPageIndex] = useState(1);
   const [posts, setPosts] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        const res = await authApi.ShowPost(page);
+        const res = await authApi.ShowPost(pageIndex);
         console.log(res);
         setPosts(res.posts);
         setTotalPages(res.totalPages);
@@ -21,7 +22,7 @@ const Dashboard = () => {
       }
     };
     loadPosts();
-  }, [page]);
+  }, [pageIndex]);
 
   console.log("1");
   const { user, loading } = useAuth();
@@ -38,6 +39,11 @@ const Dashboard = () => {
           <Post key={post._id} post={post} />
         ))}
       </div>
+      <Pagination
+        pageIndex={pageIndex}
+        totalPages={totalPages}
+        onPageChange={setPageIndex}
+      />
     </>
   );
 };
