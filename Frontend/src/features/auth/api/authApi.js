@@ -19,10 +19,7 @@ const AddPost = async (form) => {
 
 const SignUp = async (form) => {
   try {
-    const res = await axios.post(
-      "http://localhost:9000/api/users/signup",
-      form
-    );
+    const res = await axios.post("http://localhost:9000/api/user/signup", form);
     console.log(res);
   } catch (err) {
     console.error(err);
@@ -32,7 +29,7 @@ const SignUp = async (form) => {
 const SignIn = async (form) => {
   try {
     const res = await axios.post(
-      "http://localhost:9000/api/users/signin",
+      "http://localhost:9000/api/user/signin",
       form,
       {
         withCredentials: true,
@@ -47,7 +44,7 @@ const SignIn = async (form) => {
 };
 const GetMe = async () => {
   try {
-    const res = await axios.get("http://localhost:9000/api/users/me", {
+    const res = await axios.get("http://localhost:9000/api/user/me", {
       withCredentials: true, // 👈 send cookie
     });
     console.log("getMe running");
@@ -57,7 +54,7 @@ const GetMe = async () => {
     return null; // not logged in
   }
 };
-const ShowPost = async (page) => {
+const ShowFeed = async (page) => {
   const limit = 5;
   try {
     const res = await axios.get(
@@ -82,9 +79,7 @@ const ShowPost = async (page) => {
           "salt":"�V�|����\t�%�p��",
           "__v": 0
       },
-      "upvotes": [],
-      "downvotes": [],
-      "comments": [],
+ 
       "upvoteCount": 0,
       "downvoteCount": 0,
       "CommentCount": 0,
@@ -98,10 +93,68 @@ const ShowPost = async (page) => {
     return err;
   }
 };
+const ShowPost = async (postId) => {
+  try {
+    const res = await axios.get(`http://localhost:9000/api/post/${postId}`, {
+      withCredentials: true,
+    });
+    console.log(res);
+    {
+      //  {
+      //     "post": {
+      //         "commentCount": 0,
+      //         "_id": "68bae870b16d9fea5f5b5a35",
+      //         "title": "title",
+      //         "body": "body",
+      //         "tags": [],
+      //         "postBy": "68a5af4904c8799341443851",
+      //         "upvotes": [],
+      //         "downvotes": [],
+      //         "comments": [],
+      //         "upvoteCount": 4,
+      //         "downvoteCount": 5,
+      //         "CommentCount": 0,
+      //         "createdAt": "2025-09-05T13:41:04.066Z",
+      //         "updatedAt": "2025-09-20T12:50:10.905Z",
+      //         "__v": 0
+      //     },
+      //     "comments": [
+      //         {
+      //             "_id": "68cf58e203226d12bdadf8ea",
+      //             "content": "This is a dummy comment",
+      //             "user": "68a5af4904c8799341443851",
+      //             "post": "68bae870b16d9fea5f5b5a35",
+      //             "parentComment": null,
+      //             "upvoteCount": 0,
+      //             "downvoteCount": 0,
+      //             "createdAt": "2025-09-21T01:46:10.941Z",
+      //             "updatedAt": "2025-09-21T01:46:10.941Z",
+      //             "__v": 0
+      //         },
+      //         {
+      //             "_id": "68cf59471084f665db1d5f77",
+      //             "content": "This is a dummy comment second",
+      //             "user": "68a5af4904c8799341443851",
+      //             "post": "68bae870b16d9fea5f5b5a35",
+      //             "parentComment": null,
+      //             "upvoteCount": 0,
+      //             "downvoteCount": 0,
+      //             "createdAt": "2025-09-21T01:46:10.941Z",
+      //             "updatedAt": "2025-09-21T01:46:10.941Z",
+      //             "__v": 0
+      //         }
+      //     ]
+    }
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};
 const Logout = async () => {
   try {
     await axios.post(
-      "http://localhost:9000/api/users/logout",
+      "http://localhost:9000/api/user/logout",
       {},
       {
         withCredentials: true,
@@ -124,5 +177,41 @@ const Vote = async (postId, type) => {
     return "invalid token";
   }
 };
+const AddComment = async (postId, content, parentComment = null) => {
+  try {
+    const res = await axios.post(
+      `http://localhost:9000/api/comment/${postId}`,
+      { content, parentComment },
+      { withCredentials: true }
+    );
+    return res.data;
+  } catch (err) {
+    console.error("AddComment error:", err);
+    return null;
+  }
+};
 
-export default { SignIn, SignUp, GetMe, AddPost, ShowPost, Logout, Vote };
+const GetComments = async (postId) => {
+  try {
+    const res = await axios.get(`http://localhost:9000/api/comment/${postId}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err) {
+    console.error("GetComments error:", err);
+    return [];
+  }
+};
+
+export default {
+  SignIn,
+  SignUp,
+  GetMe,
+  AddPost,
+  ShowPost,
+  ShowFeed,
+  Logout,
+  Vote,
+  AddComment,
+  GetComments,
+};

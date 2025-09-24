@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const commentSchema = new mongoose.Schema(
   {
@@ -22,10 +22,16 @@ const commentSchema = new mongoose.Schema(
       ref: "Comment",
       default: null,
     },
-    upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    downvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    upvoteCount: {
+      type: Number,
+      default: 0,
+    },
+    downvoteCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Comment", commentSchema);
+module.exports = mongoose.model("Comment", commentSchema);

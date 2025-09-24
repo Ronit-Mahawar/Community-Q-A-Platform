@@ -4,6 +4,7 @@ const { mongooDbConnect } = require("./connection");
 const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/user");
 const postRouter = require("./routers/post");
+const commentRouter = require("./routers/comment");
 mongooDbConnect("mongodb://127.0.0.1:27017/qna");
 const User = require("./models/user");
 const cookieParser = require("cookie-parser");
@@ -30,5 +31,6 @@ app.get("/", (req, res) => {
 //   password: "12345678",
 // });
 
-app.use("/api/users", userRouter);
+app.use("/api/user", userRouter);
 app.use("/api/post", postRouter);
+app.use("/api/comment", commentRouter);

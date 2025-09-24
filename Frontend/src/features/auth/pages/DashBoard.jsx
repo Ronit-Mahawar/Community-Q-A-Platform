@@ -13,7 +13,7 @@ const Dashboard = () => {
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        const res = await authApi.ShowPost(pageIndex);
+        const res = await authApi.ShowFeed(pageIndex);
         console.log(res);
         setPosts(res.posts);
         setTotalPages(res.totalPages);

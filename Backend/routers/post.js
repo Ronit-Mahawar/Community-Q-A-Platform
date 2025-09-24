@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../models/post");
+const Comment = require("../models/comment");
 const { checkForAuth, OptionalAuth } = require("../middlewear/auth");
 const PostVote = require("../models/postVote");
 
@@ -16,6 +17,18 @@ router.post("/addPost", checkForAuth("token"), async (req, res) => {
   return res.json("post added");
 });
 router.get("/", OptionalAuth("token"), async (req, res) => {
+  // try {
+  //   const dummyComment = await Comment.create({
+  //     content: "This is a dummy comment",
+  //     user: "68a5af4904c8799341443851", // random ObjectId
+  //     post: "68bae870b16d9fea5f5b5a35", // random ObjectId
+  //     parentComment: null, // optional, leave null if top-level
+  //   });
+
+  //   console.log("Dummy comment created:", dummyComment);
+  // } catch (err) {
+  //   console.error(err);
+  // }
   let { page = 1, limit = 5 } = req.query;
   page = parseInt(page);
   limit = parseInt(limit);
@@ -74,6 +87,25 @@ router.get("/", OptionalAuth("token"), async (req, res) => {
     res.status(500).json({ error: err.msg });
   }
 });
+
+router.get("/:id", async (req, res) => {
+  const postId = req.params.id;
+  try {
+    const post = await Post.findById(postId);
+
+    const comments = await Comment.find({ post: postId });
+    console.log("comment", comments);
+    console.log("post", post);
+    return res.json({
+      post: post,
+      comments: comments,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(505).json("error");
+  }
+});
+
 router.post("/:id/vote", checkForAuth("token"), async (req, res) => {
   console.log("Params:", req.params);
   const postId = req.params.id;
