@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { mongooDbConnect } = require("./connection");
@@ -5,15 +6,15 @@ const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/user");
 const postRouter = require("./routers/post");
 const commentRouter = require("./routers/comment");
-mongooDbConnect("mongodb://127.0.0.1:27017/qna");
+mongooDbConnect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/qna");
 const User = require("./models/user");
 const cookieParser = require("cookie-parser");
 
 const app = express();
-const PORT = 9000;
+const PORT = process.env.PORT || 9000;
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend origin
+    origin: process.env.FRONTEND_ORIGIN || "http://localhost:5173", // frontend origin
     credentials: true, // allow cookies
   })
 );

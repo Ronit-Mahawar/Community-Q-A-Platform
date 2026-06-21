@@ -1,14 +1,12 @@
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:9000";
+
 const AddPost = async (form) => {
   try {
-    const res = await axios.post(
-      "http://localhost:9000/api/post/addPost",
-      form,
-      {
-        withCredentials: true,
-      }
-    );
+    const res = await axios.post(`${API_BASE_URL}/api/post/addPost`, form, {
+      withCredentials: true,
+    });
     console.log(res);
     return res;
   } catch (err) {
@@ -19,22 +17,21 @@ const AddPost = async (form) => {
 
 const SignUp = async (form) => {
   try {
-    const res = await axios.post("http://localhost:9000/api/user/signup", form);
+    const res = await axios.post(`${API_BASE_URL}/api/user/signup`, form, {
+      withCredentials: true,
+    });
     console.log(res);
+    return res;
   } catch (err) {
     console.error(err);
+    throw err;
   }
-  return "hello";
 };
 const SignIn = async (form) => {
   try {
-    const res = await axios.post(
-      "http://localhost:9000/api/user/signin",
-      form,
-      {
-        withCredentials: true,
-      }
-    );
+    const res = await axios.post(`${API_BASE_URL}/api/user/signin`, form, {
+      withCredentials: true,
+    });
     console.log("res from signin", res);
     return res;
   } catch (err) {
@@ -44,7 +41,7 @@ const SignIn = async (form) => {
 };
 const GetMe = async () => {
   try {
-    const res = await axios.get("http://localhost:9000/api/user/me", {
+    const res = await axios.get(`${API_BASE_URL}/api/user/me`, {
       withCredentials: true, // 👈 send cookie
     });
     console.log("getMe running");
@@ -58,7 +55,7 @@ const ShowFeed = async (page) => {
   const limit = 5;
   try {
     const res = await axios.get(
-      `http://localhost:9000/api/post?page=${page}&limit=${limit}`,
+      `${API_BASE_URL}/api/post?page=${page}&limit=${limit}`,
       { withCredentials: true }
     );
     console.log(res);
@@ -95,7 +92,7 @@ const ShowFeed = async (page) => {
 };
 const ShowPost = async (postId) => {
   try {
-    const res = await axios.get(`http://localhost:9000/api/post/${postId}`, {
+    const res = await axios.get(`${API_BASE_URL}/api/post/${postId}`, {
       withCredentials: true,
     });
     console.log(res);
@@ -154,7 +151,7 @@ const ShowPost = async (postId) => {
 const Logout = async () => {
   try {
     await axios.post(
-      "http://localhost:9000/api/user/logout",
+      `${API_BASE_URL}/api/user/logout`,
       {},
       {
         withCredentials: true,
@@ -167,7 +164,7 @@ const Logout = async () => {
 const Vote = async (postId, type) => {
   try {
     const res = await axios.post(
-      `http://localhost:9000/api/post/${postId}/vote`,
+      `${API_BASE_URL}/api/post/${postId}/vote`,
       { type },
       { withCredentials: true }
     );
@@ -180,7 +177,7 @@ const Vote = async (postId, type) => {
 const AddComment = async (postId, content, parentComment = null) => {
   try {
     const res = await axios.post(
-      `http://localhost:9000/api/comment/${postId}`,
+      `${API_BASE_URL}/api/comment/${postId}`,
       { content, parentComment },
       { withCredentials: true }
     );
@@ -193,7 +190,7 @@ const AddComment = async (postId, content, parentComment = null) => {
 
 const GetComments = async (postId) => {
   try {
-    const res = await axios.get(`http://localhost:9000/api/comment/${postId}`, {
+    const res = await axios.get(`${API_BASE_URL}/api/comment/${postId}`, {
       withCredentials: true,
     });
     return res.data;

@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import authApi from "../api/authApi";
+import { useAuth } from "../context/authContext";
 
 const SignupForm = () => {
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
   const [userFormData, setUserFormData] = useState({
     fullName: "",
     email: "",
@@ -19,8 +23,16 @@ const SignupForm = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await authApi.SignUp(userFormData);
-    console.log(res);
+    try {
+      const res = await authApi.SignUp(userFormData);
+      console.log(res);
+      if (res?.status >= 200 && res?.status < 300) {
+        setUser(res.data.user);
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Signup failed:", err);
+    }
   };
 
   return (

@@ -8,13 +8,32 @@ const { checkForAuth } = require("../middlewear/auth");
 router.post("/signup", async (req, res) => {
   console.log(req.body);
   const { fullName, email, password } = req.body;
-  await User.create({
-    fullName: fullName,
-    email: email,
-    password: password,
-  });
-  console.log("create");
-  return res.json("hello");
+  try {
+    const user = await User.create({
+      fullName,
+      email,
+      password,
+    });
+    const token = makeUserToken(user);
+    const payload = {
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+    };
+    console.log("create");
+    return res
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      })
+      .status(201)
+      .json({ message: "User created", user: payload });
+  } catch (err) {
+    console.error("Signup error:", err);
+    return res.status(500).json({ message: "Signup failed", error: err.message });
+  }
 });
 
 router.post("/signin", async (req, res) => {
